@@ -9,6 +9,8 @@ Pandoc filter to number all kinds of things.
 import copy
 import re
 import unicodedata
+import sys
+import json
 from functools import partial
 
 from panflute import (  # type: ignore
@@ -52,6 +54,9 @@ from panflute import (  # type: ignore
     stringify,
     convert_text,
     debug,
+    load,
+    dump,
+    get_option
 )
 
 
@@ -1523,10 +1528,19 @@ def main(doc=None):
     ---------
         doc: pandoc document
     """
-    return run_filters(
+    r = run_filters(
         [numbering, referencing], prepare=prepare, doc=doc, finalize=finalize
     )
 
+    return r
+
 
 if __name__ == "__main__":
-    main()
+    doc = load()
+    processed = main(doc)
+    o = get_option(doc = doc, doc_tag = "pandoc_numbering_map_output", error_on_none = False)
+    u = {k: v._global_number for k, v in doc.information.items()}
+    with open(o, 'w') as out:
+        json.dump(u, out)
+        
+    dump(processed)
