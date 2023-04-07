@@ -1541,8 +1541,11 @@ if __name__ == "__main__":
 
     o = get_option(doc = doc, doc_tag = "pandoc_numbering_map_output", error_on_none = False)
     if o != None:
+        print("[INFO] pandoc-numbering: Printing mapping to {}".format(o), file = sys.stderr)
         u = {k: v._global_number for k, v in doc.information.items()}
         with open(o, 'w') as out:
             json.dump(u, out)
+    else:
+        print("[INFO] pandoc-numbering: Skipping of mapping output", file = sys.stderr)
         
     dump(processed)
