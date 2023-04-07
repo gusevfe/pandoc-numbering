@@ -1538,9 +1538,11 @@ def main(doc=None):
 if __name__ == "__main__":
     doc = load()
     processed = main(doc)
+
     o = get_option(doc = doc, doc_tag = "pandoc_numbering_map_output", error_on_none = False)
-    u = {k: v._global_number for k, v in doc.information.items()}
-    with open(o, 'w') as out:
-        json.dump(u, out)
+    if o != None:
+        u = {k: v._global_number for k, v in doc.information.items()}
+        with open(o, 'w') as out:
+            json.dump(u, out)
         
     dump(processed)
